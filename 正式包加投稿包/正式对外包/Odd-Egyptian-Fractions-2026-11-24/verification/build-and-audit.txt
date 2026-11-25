@@ -1,0 +1,150 @@
+Lean (version 4.36.0, x86_64-w64-windows-gnu, commit 611c117bfaf7b7ae1cfcf246ce6fba31e8f509e9, Release)
+✔ [8196/8202] Built MathProblems.OddEgyptian.EnglishManuscript (12s)
+✔ [8198/8202] Built MathProblems.OddEgyptian (12s)
+✔ [8200/8202] Built MathProblems (16s)
+Build completed successfully (8202 jobs).
+OddEgyptian.englishManuscript_of_threePrimeInput (vinogradov : OddEgyptian.ThreePrimeInput) :
+  OddEgyptian.EnglishManuscriptResults
+OddEgyptian.englishManuscript_of_mangoldt (vinogradov : OddEgyptian.MangoldtTripleInput) :
+  OddEgyptian.EnglishManuscriptResults
+structure OddEgyptian.EnglishManuscriptResults : Prop
+number of parameters: 0
+fields:
+  OddEgyptian.EnglishManuscriptResults.uniformLength : OddEgyptian.UniformMinLengthTarget
+  OddEgyptian.EnglishManuscriptResults.maximumAndMeanLength : OddEgyptian.LengthStatisticsTarget
+  OddEgyptian.EnglishManuscriptResults.leastLengthWithPrescribedPrimes : OddEgyptian.PrimorialLengthTarget
+  OddEgyptian.EnglishManuscriptResults.commonPrefix : OddEgyptian.CommonPrefixTarget
+  OddEgyptian.EnglishManuscriptResults.totalCount : OddEgyptian.CTarget
+  OddEgyptian.EnglishManuscriptResults.multiplicityAtMaximum : OddEgyptian.MaximumMultiplicityTarget
+constructor:
+  OddEgyptian.EnglishManuscriptResults.mk (uniformLength : OddEgyptian.UniformMinLengthTarget)
+    (maximumAndMeanLength : OddEgyptian.LengthStatisticsTarget)
+    (leastLengthWithPrescribedPrimes : OddEgyptian.PrimorialLengthTarget)
+    (commonPrefix : OddEgyptian.CommonPrefixTarget) (totalCount : OddEgyptian.CTarget)
+    (multiplicityAtMaximum : OddEgyptian.MaximumMultiplicityTarget) : OddEgyptian.EnglishManuscriptResults
+def OddEgyptian.UniformMinLengthTarget : Prop :=
+∃ C,
+  0 < C ∧
+    ∀ (a b : ℕ),
+      3 ≤ b →
+        Odd b →
+          1 ≤ a →
+            a < b →
+              (∃ s, OddEgyptian.Represents (↑a / ↑b) s ∧ s.card = OddEgyptian.oddMinLength a b) ∧
+                ↑(OddEgyptian.oddMinLength a b) ≤ C * (1 + Real.log (Real.log ↑b))
+def OddEgyptian.LengthStatisticsTarget : Prop :=
+∃ C,
+  0 < C ∧
+    ∃ b₀,
+      ∀ (b : ℕ),
+        b₀ ≤ b →
+          Odd b →
+            1 / 2 * Real.log (Real.log ↑b) ≤ ↑(OddEgyptian.maxOddMinLength b) ∧
+              1 / 8 * Real.log (Real.log ↑b) ≤ OddEgyptian.meanOddMinLength b ∧
+                OddEgyptian.meanOddMinLength b ≤ ↑(OddEgyptian.maxOddMinLength b) ∧
+                  ↑(OddEgyptian.maxOddMinLength b) ≤ C * Real.log (Real.log ↑b)
+def OddEgyptian.PrimorialLengthTarget : Prop :=
+∃ C,
+  0 < C ∧
+    ∃ r₀,
+      ∀ (r : ℕ),
+        r₀ ≤ r →
+          ∃ kω k,
+            OddEgyptian.primeFactorMinLength r = ↑kω ∧
+              OddEgyptian.primorialMinLength r = ↑k ∧ 1 / 2 * Real.log ↑r ≤ ↑kω ∧ kω ≤ k ∧ ↑k ≤ C * Real.log ↑r
+def OddEgyptian.CommonPrefixTarget : Prop :=
+∃ c,
+  0 < c ∧
+    ∃ k₀,
+      ∀ (k : ℕ),
+        k₀ ≤ k →
+          Odd k →
+            ∃ P Y,
+              OddEgyptian.IsPrefixFamily k (OddEgyptian.FirstOddProduct ⌊Real.exp (c * ↑k)⌋₊) P Y ∧
+                Real.exp (Real.exp (c * ↑k)) ≤ ↑Y.card
+def OddEgyptian.IsPrefixFamily : ℕ → ℕ → Finset ℕ → Finset ℕ → Prop :=
+fun k Q P Y =>
+  P.card + 2 = k ∧ ∀ y ∈ Y, ∃ x, (∀ p ∈ P, p < x) ∧ x < y ∧ OddEgyptian.Represents 1 (insert y (insert x P)) ∧ Q ∣ y
+def OddEgyptian.MaximumMultiplicityTarget : Prop :=
+∃ c,
+  0 < c ∧
+    ∃ k₀,
+      ∀ (k : ℕ),
+        k₀ ≤ k →
+          Odd k →
+            OddEgyptian.HasMaximumFamilies k (OddEgyptian.FirstOddProduct ⌊Real.exp (c * ↑k)⌋₊)
+              ⌈Real.exp (Real.exp (c * ↑k))⌉₊
+def OddEgyptian.HasMaximumFamilies : ℕ → ℕ → ℕ → Prop :=
+fun k Q n =>
+  ∃ M, n ≤ M.card ∧ ∀ y ∈ M, Q ∣ y ∧ ∃ S, n ≤ S.card ∧ ∀ s ∈ S, OddEgyptian.Represents 1 s ∧ s.card = k ∧ s.sup id = y
+'OddEgyptian.englishManuscript_of_threePrimeInput' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.englishManuscript_of_mangoldt' depends on axioms: [propext, Classical.choice, Quot.sound]
+OddEgyptian.main_of_threePrimeInput (vinogradov : OddEgyptian.ThreePrimeInput) :
+  OddEgyptian.HTarget ∧ OddEgyptian.CTarget
+OddEgyptian.main_of_mangoldt (vinogradov : OddEgyptian.MangoldtTripleInput) : OddEgyptian.HTarget ∧ OddEgyptian.CTarget
+OddEgyptian.mangoldtInput_of_singularSeries {R : ℕ → ℝ} {S : ℤ → ℂ}
+  (hR : ∀ (n : ℕ), R n = OddEgyptian.mangoldtTripleSum n) (hpos : ∀ (k : ℤ), ¬2 ∣ k → 1 ≤ (S k).re)
+  (herr : (fun n => ↑(R n) - OddEgyptian.circleMainTerm S n) =o[Filter.atTop] fun n => ↑n ^ 2) :
+  OddEgyptian.MangoldtTripleInput
+OddEgyptian.main_of_allPrimeTriples (vinogradov : OddEgyptian.AllPrimeTripleInput) :
+  OddEgyptian.HTarget ∧ OddEgyptian.CTarget
+OddEgyptian.main_of_logWeightedPrimes (vinogradov : OddEgyptian.LogWeightedPrimeTripleInput) :
+  OddEgyptian.HTarget ∧ OddEgyptian.CTarget
+OddEgyptian.counting_of_short (hH : OddEgyptian.HTarget) : OddEgyptian.CTarget
+OddEgyptian.oddCount_le_sharp (k : ℕ) : OddEgyptian.oddCount k ≤ k ^ (2 ^ k - 1)
+OddEgyptian.oddCount_exp_upper_two (k : ℕ) (hk : 1 ≤ k) : ↑(OddEgyptian.oddCount k) ≤ Real.exp (Real.exp (2 * ↑k))
+OddEgyptian.markedExact_of_threePrimeInput (vinogradov : OddEgyptian.ThreePrimeInput) : OddEgyptian.MarkedExactTarget
+OddEgyptian.oddCount_exp_upper (k : ℕ) (hk : 1 ≤ k) : ↑(OddEgyptian.oddCount k) ≤ Real.exp (Real.exp (4 * ↑k))
+OddEgyptian.finitenessTarget : OddEgyptian.FinitenessTarget
+OddEgyptian.represents_one_odd_card {s : Finset ℕ} (hs : OddEgyptian.Represents 1 s) : Odd s.card
+OddEgyptian.oddTailBasis : OddEgyptian.OddTailBasis
+OddEgyptian.maximum_of_short (hH : OddEgyptian.HTarget) : OddEgyptian.MaximumTarget
+OddEgyptian.maximum_of_threePrimeInput (vinogradov : OddEgyptian.ThreePrimeInput) : OddEgyptian.MaximumTarget
+def OddEgyptian.HTarget : Prop :=
+∃ C,
+  0 < C ∧
+    ∀ (a b : ℕ),
+      3 ≤ b →
+        Odd b → 1 ≤ a → a < b → ∃ s, OddEgyptian.Represents (↑a / ↑b) s ∧ ↑s.card ≤ C * (1 + Real.log (Real.log ↑b))
+def OddEgyptian.CTarget : Prop :=
+∃ c C,
+  0 < c ∧
+    0 < C ∧
+      ∃ k₀,
+        ∀ (k : ℕ),
+          k₀ ≤ k →
+            Odd k →
+              Real.exp (Real.exp (c * ↑k)) ≤ ↑(OddEgyptian.oddCount k) ∧
+                ↑(OddEgyptian.oddCount k) ≤ Real.exp (Real.exp (C * ↑k))
+def OddEgyptian.ThreePrimeInput : Prop :=
+∃ v,
+  0 < v ∧ ∃ m₀, 7 ≤ m₀ ∧ ∀ (m : ℕ), m₀ ≤ m → Odd m → v * ↑m ^ 2 / Real.log ↑m ^ 3 ≤ ↑(OddEgyptian.threePrimeReps m).card
+def OddEgyptian.MaximumTarget : Prop :=
+∃ A,
+  0 < A ∧
+    ∃ r₀,
+      ∀ (r : ℕ),
+        r₀ ≤ r → ∃ s, OddEgyptian.Represents 1 s ∧ ↑s.card ≤ A * Real.log ↑r ∧ OddEgyptian.FirstOddProduct r ∣ s.sup id
+def OddEgyptian.MarkedExactTarget : Prop :=
+∃ A,
+  0 < A ∧
+    ∃ r₀,
+      ∀ (r : ℕ),
+        r₀ ≤ r → ∃ s, OddEgyptian.Represents 1 s ∧ ↑s.card ≤ A * Real.log ↑r ∧ OddEgyptian.FirstOddProduct r ∈ s
+'OddEgyptian.main_of_threePrimeInput' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.main_of_mangoldt' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.mangoldtInput_of_singularSeries' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.main_of_allPrimeTriples' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.main_of_logWeightedPrimes' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.counting_of_short' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.oddCount_le_sharp' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.oddCount_exp_upper_two' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.markedExact_of_threePrimeInput' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.oddCount_exp_upper' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.finitenessTarget' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.represents_one_odd_card' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.oddTailBasis' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.maximum_of_short' depends on axioms: [propext, Classical.choice, Quot.sound]
+'OddEgyptian.maximum_of_threePrimeInput' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ExternalDefinitionCheck.published_R_eq_local' depends on axioms: [propext, Classical.choice, Quot.sound]
+Axiom audit passed for 365 declarations.
